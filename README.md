@@ -31,7 +31,7 @@ No panic. No hype. Just the signal.
 
 | # | Title | Date | Read |
 |---|-------|------|------|
-| 001 | AI Built Itself — And the World Is Only Starting to Notice | Feb 11, 2026 | [→ Read](./articles/001-ai-built-itself/index.html) |
+| 001 | AI Built Itself — And the World Is Only Starting to Notice | Feb 11, 2026 | [→ Read](./articles/001-ai-built-itself.html) |
 
 *New articles added every Tuesday.*
 

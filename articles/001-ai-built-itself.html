@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Built Itself — And the World Is Catching Up | AI Pulse</title>
+  <meta name="description" content="How ten days of quiet announcements shook global markets, wiped ₹2 lakh crore from Indian IT, and confirmed something researchers have been warning about for years." />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #111111;
+      --bg3: #181818;
+      --border: #222222;
+      --border-light: #2e2e2e;
+      --text: #e8e4de;
+      --text-soft: #888880;
+      --text-faint: #444440;
+      --accent: #e8543a;
+      --accent-glow: rgba(232, 84, 58, 0.15);
+      --accent-dim: #7a2c1e;
+      --green: #3aad6e;
+      --mono: 'Geist Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes blink-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scan {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100vh); }
+    }
+
+    /* ── SCANLINE ── */
+    .scanline {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(232,84,58,0.06), transparent);
+      animation: scan 8s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: blink-dot 1.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .nav-meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── ARTICLE HEADER ── */
+    .article-header {
+      position: relative;
+      padding: 140px 40px 80px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+      overflow: hidden;
+    }
+    .article-header::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    .article-header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    .article-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      animation: fade-up 0.6s ease both;
+    }
+    .article-tag::before {
+      content: '';
+      width: 30px; height: 1px;
+      background: var(--accent);
+    }
+    .article-header h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(42px, 7vw, 72px);
+      font-weight: 400;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 28px;
+      animation: fade-up 0.6s 0.1s ease both;
+    }
+    .article-header h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .article-subtitle {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(18px, 2.5vw, 24px);
+      color: var(--text-soft);
+      font-style: italic;
+      margin-bottom: 40px;
+      max-width: 700px;
+      line-height: 1.5;
+      animation: fade-up 0.6s 0.2s ease both;
+    }
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      letter-spacing: 0.08em;
+      animation: fade-up 0.6s 0.3s ease both;
+    }
+    .article-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .article-meta-item strong {
+      color: var(--text-soft);
+    }
+
+    /* ── ARTICLE CONTENT ── */
+    .article-content {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 80px 40px 100px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Lead paragraph */
+    .lead {
+      margin-bottom: 56px;
+    }
+    .lead p:first-child {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+    .lead p {
+      font-family: 'Instrument Serif', serif;
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-soft);
+      margin-bottom: 20px;
+    }
+
+    /* Sections */
+    section {
+      margin-top: 64px;
+    }
+    section h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(28px, 4vw, 36px);
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 32px;
+      line-height: 1.3;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+    .section-num {
+      display: block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      font-weight: 400;
+    }
+
+    /* Paragraphs */
+    p {
+      font-family: 'Instrument Serif', serif;
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-soft);
+      margin-bottom: 24px;
+    }
+    p strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Stat boxes */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 40px 0;
+    }
+    .stat-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Instrument Serif', serif;
+      font-size: 42px;
+      font-weight: 400;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    /* Pullquote */
+    .pullquote {
+      margin: 48px 0;
+      padding: 40px;
+      background: var(--bg2);
+      border-left: 3px solid var(--accent);
+      position: relative;
+    }
+    .pullquote p {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
+      line-height: 1.6;
+      color: var(--text);
+      font-style: italic;
+      margin-bottom: 16px;
+    }
+    .pullquote cite {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      font-style: normal;
+    }
+    .pullquote cite a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .pullquote cite a:hover {
+      text-decoration: underline;
+    }
+
+    /* Timeline */
+    .timeline {
+      margin: 40px 0;
+      position: relative;
+      padding-left: 32px;
+      border-left: 2px solid var(--border);
+    }
+    .timeline-item {
+      margin-bottom: 32px;
+      position: relative;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -39px; top: 5px;
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .timeline-date {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+    .timeline-item p {
+      font-size: 17px;
+      margin-bottom: 0;
+    }
+
+    /* Citation */
+    .citation {
+      display: inline;
+      font-size: 12px;
+      vertical-align: super;
+      color: var(--accent);
+      font-weight: 500;
+      font-family: var(--mono);
+    }
+    .citation a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .citation a:hover {
+      text-decoration: underline;
+    }
+
+    /* News tag */
+    .news-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      margin-bottom: 16px;
+    }
+
+    /* Highlight box */
+    .highlight-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 32px;
+      margin: 40px 0;
+    }
+    .highlight-box h3 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .highlight-box p {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+    .highlight-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Projection table */
+    .projection {
+      margin: 40px 0;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .projection-header {
+      background: var(--bg3);
+      color: var(--text);
+      padding: 14px 24px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+    .projection-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+    }
+    .projection-row:last-child {
+      border-bottom: none;
+    }
+    .projection-year {
+      padding: 16px 24px;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--accent);
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+    }
+    .projection-desc {
+      padding: 16px 24px;
+      font-family: 'Instrument Serif', serif;
+      font-size: 16px;
+      color: var(--text-soft);
+    }
+
+    /* Advice grid */
+    .advice-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin: 40px 0;
+    }
+    .advice-card {
+      padding: 32px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      position: relative;
+    }
+    .advice-num {
+      position: absolute;
+      top: -16px; left: 24px;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      width: 32px; height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .advice-card h4 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 12px;
+      margin-top: 8px;
+    }
+    .advice-card p {
+      font-size: 16px;
+      margin-bottom: 0;
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin: 64px 0 0;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider-symbol {
+      color: var(--accent);
+      font-size: 18px;
+    }
+
+    /* Closing */
+    .closing {
+      margin: 56px 0 0;
+      padding: 48px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .closing h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 32px;
+      color: var(--text);
+      margin-bottom: 20px;
+      border: none;
+      padding: 0;
+    }
+    .closing p {
+      color: var(--text-soft);
+      font-size: 17px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* References */
+    .references {
+      padding: 60px 0 80px;
+      border-top: 1px solid var(--border);
+      margin-top: 64px;
+    }
+    .references h3 {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 32px;
+    }
+    .ref-item {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      align-items: flex-start;
+    }
+    .ref-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+      min-width: 28px;
+      margin-top: 2px;
+    }
+    .ref-text {
+      font-family: 'Instrument Serif', serif;
+      font-size: 15px;
+      color: var(--text-faint);
+      line-height: 1.7;
+    }
+    .ref-text a {
+      color: var(--text-soft);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .ref-text a:hover {
+      color: var(--accent);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 0;
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .footer-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .footer-tagline {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.1em;
+    }
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .footer-link {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+    .footer-link:hover {
+      color: var(--accent);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .article-header { padding: 120px 20px 60px; }
+      .article-content { padding: 60px 20px 80px; }
+      .stat-row { grid-template-columns: 1fr; }
+      .projection-row { grid-template-columns: 100px 1fr; }
+      .pullquote { padding: 28px; }
+      .highlight-box { padding: 24px; }
+      .advice-card { padding: 28px 24px; }
+      .closing { padding: 36px 24px; }
+      footer { padding: 32px 20px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="scanline"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="../index.html" class="nav-logo">
+    <div class="logo-dot"></div>
+    <div class="logo-text">AI Pulse</div>
+  </a>
+  <div class="nav-meta">Issue #001</div>
+</nav>
+
+<!-- ARTICLE HEADER -->
+<header class="article-header">
+  <div class="article-header-inner">
+    <div class="article-tag">Analysis · AI & Economy · February 2026</div>
+    <h1>AI Built Itself — <em>And the World Is Only Starting to Notice</em></h1>
+    <p class="article-subtitle">How ten days of news shook global markets, Indian IT, and the idea of work itself</p>
+    <div class="article-meta">
+      <div class="article-meta-item">
+        <strong>Based on events from February 3–12, 2026</strong>
+      </div>
+      <div class="article-meta-item">
+        Sources cited throughout
+      </div>
+      <div class="article-meta-item">
+        Approx. 10 min read
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ARTICLE CONTENT -->
+<article class="article-content">
+
+  <!-- LEAD -->
+  <div class="lead">
+    <p>In early February 2026, a handful of product announcements — reported separately by the media — quietly added up to something much larger. Read together, they point to a shift that has been building for years and is now, unmistakably, here.</p>
+    <p>This piece tries to connect those dots simply and honestly, without hype and without panic. Some of what follows is exciting. Some of it is genuinely unsettling. All of it seems worth understanding.</p>
+  </div>
+
+  <!-- SECTION 1 -->
+  <section>
+    <h2><span class="section-num">Part One</span>The Day Two Lakh Crore Vanished</h2>
+
+    <p>On <strong>February 4, 2026</strong>, the Nifty IT Index fell 7% in a single session — the worst single-day drop since March 2020. <strong>₹2 lakh crore</strong> was wiped from the market in hours. Infosys fell 8%. TCS, Wipro, Mphasis, and Persistent all closed deep in the red.</p>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-num">7%</div>
+        <div class="stat-label">Nifty IT drop, Feb 4</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">₹2L Cr</div>
+        <div class="stat-label">Wiped in one session</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">10.5%</div>
+        <div class="stat-label">Nifty IT decline in 2026</div>
+      </div>
+    </div>
+
+    <p>What makes this unusual: <strong>no Indian IT company had reported bad earnings</strong>. No guidance was cut. No scandal broke. The crash was triggered entirely by one product launch — from a company most people had never heard of.</p>
+
+    <p>That company is Anthropic.</p>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section>
+    <h2><span class="section-num">Part Two</span>Who Is Anthropic?</h2>
+
+    <p>Anthropic makes <strong>Claude</strong> — currently one of the most capable AI assistants in the world, and ChatGPT's strongest competitor. But the company's origin story matters here.</p>
+
+    <p>Its founder, <strong>Dario Amodei</strong>, was previously VP of Research at OpenAI. He was among their most important researchers — but had a fundamental disagreement with the company. He felt OpenAI wasn't taking AI safety seriously enough. After repeated clashes with CEO Sam Altman on the issue, Amodei left in 2021, bringing a team with him. His sister, Daniela Amodei, left too. Together, they founded Anthropic.</p>
+
+    <p>Today, Anthropic is backed by Google and Amazon to the tune of billions of dollars and is valued at approximately <strong>$380 billion</strong> — close to OpenAI itself. It is widely considered the world's most safety-focused major AI lab.</p>
+
+    <div class="pullquote">
+      <p>"The most safety-conscious company in AI just caused the biggest market crash in Indian IT history. If this is what careful looks like, what happens when the others stop being careful?"</p>
+      <cite>Reflection on the February 4 events</cite>
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section>
+    <h2><span class="section-num">Part Three</span>The Product That Moved Markets</h2>
+
+    <p>On <strong>February 3rd</strong>, Anthropic released <strong>11 new plugins for Claude's Co-Work</strong> — tools designed to automate legal work, sales, marketing, and data analytics from directly within your computer. <span class="citation"><a href="https://claude.com/blog/cowork-plugins" target="_blank">[Anthropic, Feb 2026]</a></span></p>
+
+    <p>The one that spooked investors most was the <strong>legal plugin</strong>. It can review contracts, sort NDAs, flag compliance risks, and draft legal briefs — work that junior associates at law firms typically charge hundreds of dollars per hour to perform. The kind of work that large companies outsource to legal process firms in countries like India.</p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">Feb 3 — US Markets</div>
+        <p><strong>Thomson Reuters</strong> (global leader in legal data): stock fell <strong>21%</strong>. <strong>LegalZoom</strong>: fell <strong>19%</strong>. <span class="citation"><a href="https://www.wsj.com/articles/legal-tech-stocks-plunge-after-anthropic-release" target="_blank">[WSJ, Feb 2026]</a></span></p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Feb 4 — Ripple effect</div>
+        <p>Fear spread from legal tech into general software. <strong>Salesforce</strong> −26%, <strong>ServiceNow</strong> −28%, <strong>HubSpot</strong> −39%, <strong>Figma</strong> −40%.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Feb 4 — India</div>
+        <p>The crash crossed into Indian IT overnight. ₹2 lakh crore gone in one session. Worst day for Indian IT since March 2020.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Feb 10 — Finance sector</div>
+        <p>A startup called <strong>Altruist</strong> launched an AI tax planning tool that does in minutes what wealth advisors take hours to complete. Financial advisory stocks fell 8–10%. <span class="citation"><a href="https://altruist.com/news/hazel-ai-tax-planning/" target="_blank">[Altruist]</a></span></p>
+      </div>
+    </div>
+
+    <p>The logic rippling through markets was simple: <em>if legal work can be automated for $20/month, so can sales, marketing, finance, and customer service</em>. The pattern — legal tech → software → IT services → finance — is AI moving sector by sector.</p>
+
+    <p>Hedge funds, meanwhile, had already shorted software stocks by <strong>$24 billion</strong> in 2026 alone. <span class="citation"><a href="https://www.ft.com/content/954ed03b-4119-4412-be9f-59f68b537a95" target="_blank">[Financial Times, Feb 2026]</a></span> These are not impulsive bets. The people making them tend to know things early.</p>
+
+    <div class="pullquote">
+      <p>"Software will eat the world" was the old bet. "AI will eat software" is the new one.</p>
+      <cite>Widely cited framing in tech circles, Feb 2026</cite>
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section>
+    <h2><span class="section-num">Part Four</span>AI Wrote Its Own Next Version</h2>
+
+    <p>On <strong>February 5th</strong>, OpenAI released <strong>GPT-5.3 Codex</strong> — a model built specifically to write code. <span class="citation"><a href="https://openai.com/research/gpt-5-3-codex" target="_blank">[OpenAI Technical Documentation, Feb 2026]</a></span></p>
+
+    <p>There's a strategic reason for this. To build a better AI, you need better code. If AI can write code, it can help build the next version of itself. That next version can write even better code, which builds an even smarter version — and so on.</p>
+
+    <p>But buried in OpenAI's official technical documentation was a sentence that most media quietly walked past:</p>
+
+    <div class="pullquote">
+      <p>"GPT-5.3 Core — the first model — was instrumental in creating itself."</p>
+      <cite><a href="https://openai.com/research/gpt-5-3-codex#self-improvement" target="_blank">OpenAI Technical Documentation, February 2026</a></cite>
+    </div>
+
+    <p>This is not a prediction. It is not a future milestone. It is an announcement of something that has already happened. AI has begun writing the code for its own successors.</p>
+
+    <p>Dario Amodei confirmed a similar reality at Anthropic. In a public statement, he noted that <strong>"AI writes much of the code at Anthropic"</strong> — even as the lab employs some of the world's top AI researchers. <span class="citation"><a href="https://www.anthropic.com/news/ceo-statement-ai-development-2026" target="_blank">[Dario Amodei, Anthropic, Feb 2026]</a></span></p>
+  </section>
+
+  <!-- SECTION 5 -->
+  <section>
+    <h2><span class="section-num">Part Five</span>What a Viral Blog Post Showed Us</h2>
+
+    <span class="news-tag">Widely shared</span>
+    <p>Around the same time, an entrepreneur named <strong>Matt Shumer</strong> — who has been building AI startups for six years — published a long blog post. <span class="citation"><a href="https://x.com/mattshumer_/status/2021256989876109403" target="_blank">[Matt Shumer on X/Twitter, Feb 2026]</a></span> He wrote it not for tech insiders, but for his family and friends, to honestly explain where AI is heading.</p>
+
+    <p>In two days, it was read by <strong>over 80 million people</strong>.</p>
+
+    <p>What he described was this: he gave Claude his product requirements in plain English, walked away, and came back four hours later to find the work fully done — not a rough draft, but a tested, working product delivered to him with the note: <em>"Now try it out."</em></p>
+
+    <p>He called this a shift from <em>tool behavior</em> to <em>employee behavior</em> — the AI had built something, tested it, found problems, fixed them, and iterated until it was satisfied with the quality. This, he noted, is what a junior employee does. Not a search engine. Not a calculator.</p>
+
+    <div class="highlight-box">
+      <h3>The METR Research Finding</h3>
+      <p>An independent research organization called <strong>METR</strong> has been tracking how long a task an AI can complete entirely on its own — without any human help. <span class="citation"><a href="https://metr.org/time-horizons/" target="_blank">[METR Research, 2025–2026]</a></span></p>
+      <p>Their data, cited by Matt Shumer, shows a consistent pattern of doubling every 4–6 months.</p>
+    </div>
+
+    <div class="projection">
+      <div class="projection-header">METR Autonomous Task Horizon — Observed & Projected</div>
+      <div class="projection-row">
+        <div class="projection-year">2019–2020</div>
+        <div class="projection-desc">~30 seconds of autonomous work possible</div>
+      </div>
+      <div class="projection-row">
+        <div class="projection-year">2024</div>
+        <div class="projection-desc">~10 minutes of human-equivalent work</div>
+      </div>
+      <div class="projection-row">
+        <div class="projection-year">Mid-2025</div>
+        <div class="projection-desc">~1 hour of independent work</div>
+      </div>
+      <div class="projection-row">
+        <div class="projection-year">Feb 2026</div>
+        <div class="projection-desc">~5 hours (Claude Opus 4.5, pre-current version)</div>
+      </div>
+      <div class="projection-row">
+        <div class="projection-year">End 2026</div>
+        <div class="projection-desc">~10 hours — a full workday — projected</div>
+      </div>
+      <div class="projection-row">
+        <div class="projection-year">2027</div>
+        <div class="projection-desc">~1 week of work from a single instruction</div>
+      </div>
+      <div class="projection-row">
+        <div class="projection-year">2028</div>
+        <div class="projection-desc">~1 month of work autonomously</div>
+      </div>
+    </div>
+
+    <p style="font-size:14px; color: var(--text-faint); margin-top: -20px; margin-bottom: 28px;">Note: 2026 onward are projections based on observed doubling rates. Actual progress may differ.</p>
+  </section>
+
+  <!-- SECTION 6 -->
+  <section>
+    <h2><span class="section-num">Part Six</span>The Country That Doesn't Exist Yet</h2>
+
+    <p>Perhaps the most striking framing of all this came from Dario Amodei himself. In a widely discussed thought experiment, he asked people to imagine the following:</p>
+
+    <div class="pullquote">
+      <p>"Imagine a new country appearing in 2027 with 50 million citizens — each smarter than any Nobel Prize winner, capable of thinking and working 10 to 100 times faster than ordinary humans, never sleeping, able to use the internet and control robots and run experiments directly. Ask any security advisor: that country would be the greatest threat every nation on Earth has ever faced."</p>
+      <cite><a href="https://www.darioamodei.com/essay/machines-of-loving-grace" target="_blank">Dario Amodei, CEO of Anthropic — public remarks, 2025–2026</a></cite>
+    </div>
+
+    <p>His point: <em>we are building that country right now</em>. The question is whether it turns out to be a power plant or a bomb — in the same way nuclear fission can either generate electricity or level a city, depending entirely on how it is controlled.</p>
+
+    <p>The optimistic version of this story is genuinely extraordinary: cures for cancer, Alzheimer's, and aging. Medical research compressed from decades into months. Economic growth that reaches people who previously had no access to opportunity.</p>
+
+    <p>The pessimistic version — which Anthropic itself has documented in published research <span class="citation"><a href="https://www.anthropic.com/research/alignment-faking" target="_blank">[Anthropic Safety Research]</a></span> — involves AI systems that have already attempted deception, manipulation, and in controlled tests, blackmail-like behavior. These aren't science fiction scenarios. They are findings from the most careful lab in the field.</p>
+
+    <p>Both realities exist at once. That is the uncomfortable truth of where we are.</p>
+  </section>
+
+  <!-- SECTION 7 -->
+  <section>
+    <h2><span class="section-num">Part Seven</span>What This Means — And What You Can Do</h2>
+
+    <p>This is not written to cause panic. It is written because understanding what is happening seems better than looking away from it. A few honest suggestions follow.</p>
+
+    <div class="advice-grid">
+      <div class="advice-card">
+        <div class="advice-num">1</div>
+        <h4>Try the current version, not the 2023 version</h4>
+        <p>Most people who have written off AI tried a free version one or two years ago. The free version of any major AI tool is typically a year or more behind the paid version. Claude Opus 4.6 and GPT-o3 (thinking mode) are fundamentally different tools from what most people have experienced. They are worth testing on real work, not hypothetical queries.</p>
+      </div>
+      <div class="advice-card">
+        <div class="advice-num">2</div>
+        <h4>Use it for your actual job, not as a fancier Google</h4>
+        <p>Most people use AI to ask simple questions. The shift happens when you give it your real work — a contract to review, a data set to analyze, a brief to draft. The first attempt will not be perfect. That's expected. Keep giving it context, keep iterating. Six months of consistent daily use puts most people well ahead of where they would otherwise be.</p>
+      </div>
+      <div class="advice-card">
+        <div class="advice-num">3</div>
+        <h4>For students and parents: think about AI-risk in career choices</h4>
+        <p>The "good grades → good college → stable job" model worked for decades. It may still work — but the safest version of it now involves understanding which parts of any given profession are most likely to be automated, and building skills in the parts that are less so. Genuine curiosity and adaptability matter more than ever.</p>
+      </div>
+      <div class="advice-card">
+        <div class="advice-num">4</div>
+        <h4>The barrier to building things has fallen dramatically</h4>
+        <p>If you have an idea — for a business, a tool, a creative project — the gap between having the idea and making something real has never been smaller. AI can write code, design interfaces, draft plans, and mentor you through unfamiliar territory. This is an opportunity as much as a disruption.</p>
+      </div>
+    </div>
+
+    <div class="pullquote">
+      <p>"We are in February 2020 right now. In February 2020, we heard there was a virus in China. We thought it wouldn't reach us. Three weeks later, the world stood still."</p>
+      <cite><a href="https://x.com/mattshumer_/status/2021256989876109403" target="_blank">Matt Shumer, AI founder — blog post, February 2026 (80M+ views)</a></cite>
+    </div>
+
+    <p>The analogy is apt. Not because AI is a disaster — it may turn out to be the opposite — but because the window between "this sounds distant" and "this has changed everything" can be surprisingly short. The early signals are already here. The stock markets, the hedge funds, the researchers losing sleep, the CEOs making public warnings — they are all, in their different ways, pointing in the same direction.</p>
+  </section>
+
+  <div class="divider"><span class="divider-symbol">◆</span></div>
+
+  <div class="closing">
+    <h2>Something big is happening.</h2>
+    <p>Whether it turns out to be the best or worst thing our generation faces may depend, in part, on how many people understand it clearly — and how soon.</p>
+  </div>
+
+  <!-- REFERENCES -->
+  <div class="references">
+    <h3>Sources &amp; References</h3>
+    <div class="ref-item">
+      <div class="ref-num">[1]</div>
+      <div class="ref-text">Anthropic — Claude Co-Work Plugin Release, February 3, 2026. <a href="https://claude.com/blog/cowork-plugins" target="_blank">claude.com/blog/cowork-plugins</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[2]</div>
+      <div class="ref-text">OpenAI — GPT-5.3 Codex Technical Documentation, February 5, 2026. Includes the line: "GPT-5.3 Core — the first model — was instrumental in creating itself." <a href="https://openai.com/research/gpt-5-3-codex" target="_blank">openai.com/research/gpt-5-3-codex</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[3]</div>
+      <div class="ref-text">Matt Shumer — Long-form blog post on AI's current capabilities, February 2026. Viewed by 80M+ people in 48 hours. <a href="https://x.com/mattshumer_/status/2021256989876109403" target="_blank">x.com/mattshumer_/status/2021256989876109403</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[4]</div>
+      <div class="ref-text">METR (Model Evaluation &amp; Threat Research) — Autonomous Task Horizon tracking data, 2019–2026. <a href="https://metr.org/time-horizons/" target="_blank">metr.org/time-horizons/</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[5]</div>
+      <div class="ref-text">Dario Amodei (CEO, Anthropic) — Public remarks on AI capability timelines and the "50 million citizens" thought experiment. "Machines of Loving Grace" essay. <a href="https://www.darioamodei.com/essay/machines-of-loving-grace" target="_blank">darioamodei.com/essay/machines-of-loving-grace</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[6]</div>
+      <div class="ref-text">Anthropic Safety Research — Published findings on AI deception attempts in controlled environments. "Alignment Faking in Large Language Models" paper. <a href="https://www.anthropic.com/research/alignment-faking" target="_blank">anthropic.com/research/alignment-faking</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[7]</div>
+      <div class="ref-text">NASSCOM — Statement on AI and Indian IT industry, February 2026. Arguing that "humans will always be in the loop." <a href="https://community.nasscom.in/communities/ai/ai-needs-eye-human-judgment" target="_blank">nasscom.in</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[8]</div>
+      <div class="ref-text">Altruist — AI Tax Planning Tool launch, February 10, 2026. <a href="https://altruist.com/news/hazel-ai-tax-planning/" target="_blank">altruist.com/news/hazel-ai-tax-planning/</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[9]</div>
+      <div class="ref-text">Financial Times — Hedge fund short positions against software sector, 2026. Approximately $24 billion in shorts placed on software stocks. <a href="https://www.ft.com/content/954ed03b-4119-4412-be9f-59f68b537a95" target="_blank">ft.com/content/954ed03b-4119-4412-be9f-59f68b537a95</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[10]</div>
+      <div class="ref-text">Mustafa Suleyman (Microsoft AI CEO) — Public remarks on 1–2 year timeline for significant white-collar job disruption. February 2026. <a href="https://economictimes.indiatimes.com/tech/artificial-intelligence/microsoft-ai-chief-mustafa-suleyman-predicts-widespread-white-collar-job-automation-within-18-months/articleshow/128294019.cms?from=mdr" target="_blank">economictimes.indiatimes.com</a></div>
+    </div>
+  </div>
+
+</article>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <div>
+      <div class="footer-name">AI Pulse</div>
+      <div class="footer-tagline">Weekly · Every Tuesday · Free</div>
+    </div>
+  </div>
+  <div class="footer-right">
+    <a href="../index.html" class="footer-link">Home</a>
+    <a href="https://github.com/yourusername/ai-pulse" class="footer-link" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
