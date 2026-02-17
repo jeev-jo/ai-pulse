@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Pulse — Weekly AI Updates Every Tuesday</title>
+  <meta name="description" content="Weekly updates on Artificial Intelligence, every Tuesday. What happened in AI this week, explained simply and honestly." />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #111111;
+      --bg3: #181818;
+      --border: #222222;
+      --border-light: #2e2e2e;
+      --text: #e8e4de;
+      --text-soft: #888880;
+      --text-faint: #444440;
+      --accent: #e8543a;
+      --accent-glow: rgba(232, 84, 58, 0.15);
+      --accent-dim: #7a2c1e;
+      --green: #3aad6e;
+      --mono: 'Geist Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── PULSE LINE ANIMATION ── */
+    @keyframes pulse-draw {
+      0% { stroke-dashoffset: 1000; opacity: 0; }
+      10% { opacity: 1; }
+      100% { stroke-dashoffset: 0; opacity: 1; }
+    }
+    @keyframes blink-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes scan {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100vh); }
+    }
+
+    /* ── SCANLINE ── */
+    .scanline {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(232,84,58,0.06), transparent);
+      animation: scan 8s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-pulse {
+      width: 28px; height: 18px;
+      position: relative;
+    }
+    .logo-pulse svg {
+      width: 100%; height: 100%;
+    }
+    .logo-pulse svg path {
+      stroke: var(--accent);
+      stroke-width: 2;
+      fill: none;
+      stroke-dasharray: 100;
+      stroke-dashoffset: 0;
+    }
+    .logo-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: blink-dot 1.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .nav-meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      letter-spacing: 0.08em;
+    }
+    .nav-meta span {
+      color: var(--green);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 40px 80px;
+      overflow: hidden;
+    }
+
+    /* Grid background */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative; z-index: 2;
+      max-width: 900px;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 36px;
+      animation: fade-up 0.6s ease both;
+    }
+    .hero-eyebrow-line {
+      width: 40px; height: 1px;
+      background: var(--accent);
+    }
+    .hero-eyebrow-text {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 300;
+    }
+
+    .hero h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(52px, 9vw, 110px);
+      font-weight: 400;
+      line-height: 0.92;
+      color: var(--text);
+      margin-bottom: 12px;
+      animation: fade-up 0.6s 0.1s ease both;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(18px, 2.5vw, 26px);
+      color: var(--text-soft);
+      font-style: italic;
+      margin-bottom: 48px;
+      max-width: 600px;
+      line-height: 1.5;
+      animation: fade-up 0.6s 0.2s ease both;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      animation: fade-up 0.6s 0.3s ease both;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.1);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .btn-primary:hover::before { transform: translateX(0); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(232,84,58,0.35); }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      animation: fade-up 0.6s 0.35s ease both;
+    }
+    .hero-stat {
+      border-left: 1px solid var(--border-light);
+      padding-left: 20px;
+    }
+    .hero-stat-num {
+      font-family: 'Instrument Serif', serif;
+      font-size: 32px;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .hero-stat-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* Pulse SVG decoration */
+    .hero-pulse-bg {
+      position: absolute;
+      right: -40px; top: 50%;
+      transform: translateY(-50%);
+      width: 55%;
+      opacity: 0.07;
+      pointer-events: none;
+      z-index: 1;
+      animation: fade-in 1s 0.5s ease both;
+    }
+    .hero-pulse-bg svg {
+      width: 100%;
+    }
+    .hero-pulse-bg svg path {
+      stroke: var(--accent);
+      stroke-width: 1.5;
+      fill: none;
+      stroke-dasharray: 2000;
+      stroke-dashoffset: 2000;
+      animation: pulse-draw 4s 0.8s ease forwards;
+    }
+
+    /* ── TICKER ── */
+    .ticker-wrap {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+      padding: 12px 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .ticker-inner {
+      display: flex;
+      gap: 0;
+      animation: ticker-scroll 30s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 32px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+    }
+    .ticker-item::after {
+      content: '◆';
+      color: var(--accent);
+      font-size: 8px;
+    }
+
+    /* ── SECTION: LATEST ── */
+    .section {
+      padding: 80px 40px;
+      position: relative;
+      z-index: 2;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .section-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+    .section-count {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── FEATURED ARTICLE CARD ── */
+    .featured-card {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 0;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      margin-bottom: 24px;
+      transition: border-color 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+    .featured-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 0;
+      background: var(--accent);
+      transition: height 0.3s ease;
+    }
+    .featured-card:hover { border-color: var(--border-light); }
+    .featured-card:hover::before { height: 100%; }
+
+    .featured-card-body {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .card-tag-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .tag-latest {
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+    }
+    .tag-issue {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      letter-spacing: 0.1em;
+    }
+    .featured-card h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--text);
+    }
+    .featured-card h2 em { font-style: italic; color: var(--accent); }
+    .featured-desc {
+      font-family: 'Instrument Serif', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--text-soft);
+      line-height: 1.6;
+      max-width: 500px;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .card-meta-item {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .card-read-btn {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .card-read-btn svg { transition: transform 0.2s ease; }
+    .featured-card:hover .card-read-btn svg { transform: translateX(4px); }
+
+    .featured-card-sidebar {
+      border-left: 1px solid var(--border);
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      background: var(--bg3);
+    }
+    .sidebar-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 8px;
+    }
+    .sidebar-stat {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+    }
+    .sidebar-stat:last-child { border-bottom: none; padding-bottom: 0; }
+    .sidebar-stat-num {
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .sidebar-tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-soft);
+      letter-spacing: 0.08em;
+      padding: 4px 8px;
+      border: 1px solid var(--border-light);
+      margin: 3px 3px 3px 0;
+    }
+
+    /* ── ARCHIVE LIST ── */
+    .archive-item {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-top: none;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s ease;
+      align-items: stretch;
+    }
+    .archive-item:first-child { border-top: 1px solid var(--border); }
+    .archive-item:hover { background: var(--bg2); }
+
+    .archive-num {
+      padding: 20px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .archive-body {
+      padding: 20px 28px;
+    }
+    .archive-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .archive-date {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.1em;
+    }
+    .archive-arrow {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      color: var(--text-faint);
+      font-size: 18px;
+      border-left: 1px solid var(--border);
+      transition: color 0.2s ease;
+    }
+    .archive-item:hover .archive-arrow { color: var(--accent); }
+
+    /* ── ABOUT STRIP ── */
+    .about-strip {
+      margin: 0 40px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .about-strip h3 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .about-strip p {
+      font-family: 'Instrument Serif', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+    .about-values {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .value-item {
+      padding: 20px;
+      border: 1px solid var(--border);
+    }
+    .value-icon {
+      font-size: 20px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .value-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .value-desc {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.05em;
+      line-height: 1.6;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: 80px;
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .footer-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .footer-tagline {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.1em;
+    }
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .footer-link {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+    .footer-link:hover { color: var(--accent); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .hero { padding: 100px 20px 60px; }
+      .hero-pulse-bg { display: none; }
+      .section { padding: 60px 20px; }
+      .featured-card { grid-template-columns: 1fr; }
+      .featured-card-sidebar { border-left: none; border-top: 1px solid var(--border); }
+      .archive-item { grid-template-columns: 50px 1fr auto; }
+      .about-strip { margin: 0 20px; padding: 32px; grid-template-columns: 1fr; gap: 32px; }
+      .hero-stats { gap: 24px; }
+      footer { padding: 32px 20px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="scanline"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="logo-dot"></div>
+    <div class="logo-text">AI Pulse</div>
+  </a>
+  <div class="nav-meta">
+    <span>●</span> LIVE — Next issue: Tuesday
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-line"></div>
+      <div class="hero-eyebrow-text">Weekly · Every Tuesday · Free</div>
+    </div>
+
+    <h1>The <em>pulse</em><br>of AI.</h1>
+    <p class="hero-sub">What happened in artificial intelligence this week — explained simply, cited honestly, published every Tuesday.</p>
+
+    <div class="hero-cta-row" style="margin-bottom: 56px;">
+      <a href="#latest" class="btn-primary">
+        Read Latest Issue
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">001</div>
+        <div class="hero-stat-label">Issues published</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">Tue</div>
+        <div class="hero-stat-label">Every week</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">Free</div>
+        <div class="hero-stat-label">Always</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pulse SVG Background -->
+  <div class="hero-pulse-bg">
+    <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,100 L60,100 L80,100 L100,20 L120,180 L140,60 L160,140 L180,100 L220,100 L240,100 L260,40 L280,160 L300,80 L320,120 L340,100 L400,100 L420,100 L440,30 L460,170 L480,50 L500,150 L520,100 L600,100 L620,100 L640,45 L660,155 L680,70 L700,130 L720,100 L800,100"/>
+    </svg>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <span class="ticker-item">AI Pulse</span>
+    <span class="ticker-item">Weekly Updates</span>
+    <span class="ticker-item">Every Tuesday</span>
+    <span class="ticker-item">Cited Sources</span>
+    <span class="ticker-item">Plain Language</span>
+    <span class="ticker-item">No Hype</span>
+    <span class="ticker-item">Free Forever</span>
+    <span class="ticker-item">AI Pulse</span>
+    <span class="ticker-item">Weekly Updates</span>
+    <span class="ticker-item">Every Tuesday</span>
+    <span class="ticker-item">Cited Sources</span>
+    <span class="ticker-item">Plain Language</span>
+    <span class="ticker-item">No Hype</span>
+    <span class="ticker-item">Free Forever</span>
+    <!-- Duplicate for seamless loop -->
+    <span class="ticker-item">AI Pulse</span>
+    <span class="ticker-item">Weekly Updates</span>
+    <span class="ticker-item">Every Tuesday</span>
+    <span class="ticker-item">Cited Sources</span>
+    <span class="ticker-item">Plain Language</span>
+    <span class="ticker-item">No Hype</span>
+    <span class="ticker-item">Free Forever</span>
+    <span class="ticker-item">AI Pulse</span>
+    <span class="ticker-item">Weekly Updates</span>
+    <span class="ticker-item">Every Tuesday</span>
+    <span class="ticker-item">Cited Sources</span>
+    <span class="ticker-item">Plain Language</span>
+    <span class="ticker-item">No Hype</span>
+    <span class="ticker-item">Free Forever</span>
+  </div>
+</div>
+
+<!-- LATEST ISSUE -->
+<section class="section" id="latest">
+  <div class="section-header">
+    <div class="section-title">Latest Issue</div>
+    <div class="section-count">1 of 1 published</div>
+  </div>
+
+  <a href="./articles/001-ai-built-itself/index.html" class="featured-card">
+    <div class="featured-card-body">
+      <div class="card-tag-row">
+        <span class="tag-latest">Latest</span>
+        <span class="tag-issue">Issue #001</span>
+      </div>
+      <h2>AI Built Itself —<br><em>And the World Is Only Starting to Notice</em></h2>
+      <p class="featured-desc">How ten days of quiet announcements shook global markets, wiped ₹2 lakh crore from Indian IT, and confirmed something researchers have been warning about for years.</p>
+      <div class="card-meta">
+        <span class="card-meta-item">Feb 11, 2026</span>
+        <span class="card-meta-item">~10 min read</span>
+        <span class="card-meta-item">10 sources cited</span>
+        <span class="card-read-btn">
+          Read Issue
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </div>
+    </div>
+    <div class="featured-card-sidebar">
+      <div class="sidebar-stat">
+        <div class="sidebar-label">Market Impact</div>
+        <div class="sidebar-stat-num">₹2L Cr</div>
+        <div style="font-family: var(--mono); font-size: 10px; color: var(--text-faint); letter-spacing: 0.08em;">wiped in one session</div>
+      </div>
+      <div class="sidebar-stat">
+        <div class="sidebar-label">Topics covered</div>
+        <div>
+          <span class="sidebar-tag">Anthropic</span>
+          <span class="sidebar-tag">OpenAI</span>
+          <span class="sidebar-tag">Indian IT</span>
+          <span class="sidebar-tag">METR</span>
+          <span class="sidebar-tag">Job Market</span>
+        </div>
+      </div>
+      <div class="sidebar-stat">
+        <div class="sidebar-label">Key figure</div>
+        <div class="sidebar-stat-num" style="font-size: 20px; color: var(--text-soft);">Dario Amodei</div>
+        <div style="font-family: var(--mono); font-size: 10px; color: var(--text-faint); letter-spacing: 0.08em;">CEO, Anthropic</div>
+      </div>
+    </div>
+  </a>
+</section>
+
+<!-- ARCHIVE -->
+<section class="section" style="padding-top: 0;">
+  <div class="section-header">
+    <div class="section-title">All Issues</div>
+    <div class="section-count">Updated every Tuesday</div>
+  </div>
+
+  <a href="./articles/001-ai-built-itself/index.html" class="archive-item">
+    <div class="archive-num">#001</div>
+    <div class="archive-body">
+      <div class="archive-title">AI Built Itself — And the World Is Only Starting to Notice</div>
+      <div class="archive-date">February 11, 2026</div>
+    </div>
+    <div class="archive-arrow">→</div>
+  </a>
+
+  <!-- Future issues will be added here as new rows -->
+
+</section>
+
+<!-- ABOUT -->
+<div class="about-strip">
+  <div>
+    <h3>Why this exists.</h3>
+    <p>AI moves faster than most coverage can keep up with. Most articles are either too deep in the weeds or too vague to be useful. AI Pulse is written for people who want to understand what's actually happening — without needing a PhD or a Bloomberg terminal.</p>
+  </div>
+  <div class="about-values">
+    <div class="value-item">
+      <span class="value-icon">📡</span>
+      <div class="value-title">Weekly signal</div>
+      <div class="value-desc">One article, every Tuesday, covering the week that was.</div>
+    </div>
+    <div class="value-item">
+      <span class="value-icon">🔗</span>
+      <div class="value-title">Always cited</div>
+      <div class="value-desc">Every claim linked to its source. No anonymous speculation.</div>
+    </div>
+    <div class="value-item">
+      <span class="value-icon">🗣️</span>
+      <div class="value-title">Plain language</div>
+      <div class="value-desc">Written for humans, not researchers. No assumed knowledge.</div>
+    </div>
+    <div class="value-item">
+      <span class="value-icon">🆓</span>
+      <div class="value-title">Free forever</div>
+      <div class="value-desc">No paywalls, no subscriptions, no ads. Ever.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <div>
+      <div class="footer-name">AI Pulse</div>
+      <div class="footer-tagline">Weekly · Every Tuesday · Free</div>
+    </div>
+  </div>
+  <div class="footer-right">
+    <a href="https://github.com/yourusername/ai-pulse" class="footer-link" target="_blank">GitHub</a>
+    <a href="#latest" class="footer-link">Latest Issue</a>
+    <a href="#" class="footer-link">Archive</a>
+  </div>
+</footer>
+
+</body>
+</html>
