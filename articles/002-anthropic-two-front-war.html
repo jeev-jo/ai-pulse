@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anthropic's Two-Front War — Caught Between China and the Pentagon | AI Pulse</title>
+  <meta name="description" content="Anthropic accused Chinese AI labs of stealing Claude's capabilities the same week the Pentagon threatened to blacklist it. Meanwhile, India bet $200 billion on AI, agents went rogue, and the economy braced for impact." />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #111111;
+      --bg3: #181818;
+      --border: #222222;
+      --border-light: #2e2e2e;
+      --text: #e8e4de;
+      --text-soft: #888880;
+      --text-faint: #444440;
+      --accent: #e8543a;
+      --accent-glow: rgba(232, 84, 58, 0.15);
+      --accent-dim: #7a2c1e;
+      --green: #3aad6e;
+      --mono: 'Geist Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes blink-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scan {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100vh); }
+    }
+
+    /* ── SCANLINE ── */
+    .scanline {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(232,84,58,0.06), transparent);
+      animation: scan 8s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: blink-dot 1.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .nav-meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── ARTICLE HEADER ── */
+    .article-header {
+      position: relative;
+      padding: 140px 40px 80px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+      overflow: hidden;
+    }
+    .article-header::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    .article-header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    .article-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      animation: fade-up 0.6s ease both;
+    }
+    .article-tag::before {
+      content: '';
+      width: 30px; height: 1px;
+      background: var(--accent);
+    }
+    .article-header h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(42px, 7vw, 72px);
+      font-weight: 400;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 28px;
+      animation: fade-up 0.6s 0.1s ease both;
+    }
+    .article-header h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .article-subtitle {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(18px, 2.5vw, 24px);
+      color: var(--text-soft);
+      font-style: italic;
+      margin-bottom: 40px;
+      max-width: 700px;
+      line-height: 1.5;
+      animation: fade-up 0.6s 0.2s ease both;
+    }
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      letter-spacing: 0.08em;
+      animation: fade-up 0.6s 0.3s ease both;
+    }
+    .article-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .article-meta-item strong {
+      color: var(--text-soft);
+    }
+
+    /* ── ARTICLE CONTENT ── */
+    .article-content {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 80px 40px 100px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Lead paragraph */
+    .lead {
+      margin-bottom: 56px;
+    }
+    .lead p:first-child {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+    .lead p {
+      font-family: 'Instrument Serif', serif;
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-soft);
+      margin-bottom: 20px;
+    }
+
+    /* Sections */
+    section {
+      margin-top: 64px;
+    }
+    section h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(28px, 4vw, 36px);
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 32px;
+      line-height: 1.3;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+    .section-num {
+      display: block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      font-weight: 400;
+    }
+
+    /* Paragraphs */
+    p {
+      font-family: 'Instrument Serif', serif;
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-soft);
+      margin-bottom: 24px;
+    }
+    p strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Stat boxes */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 40px 0;
+    }
+    .stat-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Instrument Serif', serif;
+      font-size: 42px;
+      font-weight: 400;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    /* Pullquote */
+    .pullquote {
+      margin: 48px 0;
+      padding: 40px;
+      background: var(--bg2);
+      border-left: 3px solid var(--accent);
+      position: relative;
+    }
+    .pullquote p {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
+      line-height: 1.6;
+      color: var(--text);
+      font-style: italic;
+      margin-bottom: 16px;
+    }
+    .pullquote cite {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      font-style: normal;
+    }
+    .pullquote cite a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .pullquote cite a:hover {
+      text-decoration: underline;
+    }
+
+    /* Timeline */
+    .timeline {
+      margin: 40px 0;
+      position: relative;
+      padding-left: 32px;
+      border-left: 2px solid var(--border);
+    }
+    .timeline-item {
+      margin-bottom: 32px;
+      position: relative;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -39px; top: 5px;
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .timeline-date {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+    .timeline-item p {
+      font-size: 17px;
+      margin-bottom: 0;
+    }
+
+    /* Citation */
+    .citation {
+      display: inline;
+      font-size: 12px;
+      vertical-align: super;
+      color: var(--accent);
+      font-weight: 500;
+      font-family: var(--mono);
+    }
+    .citation a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .citation a:hover {
+      text-decoration: underline;
+    }
+
+    /* News tag */
+    .news-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      margin-bottom: 16px;
+    }
+
+    /* Highlight box */
+    .highlight-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 32px;
+      margin: 40px 0;
+    }
+    .highlight-box h3 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .highlight-box p {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+    .highlight-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Projection table */
+    .projection {
+      margin: 40px 0;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .projection-header {
+      background: var(--bg3);
+      color: var(--text);
+      padding: 14px 24px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+    .projection-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+    }
+    .projection-row:last-child {
+      border-bottom: none;
+    }
+    .projection-year {
+      padding: 16px 24px;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--accent);
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+    }
+    .projection-desc {
+      padding: 16px 24px;
+      font-family: 'Instrument Serif', serif;
+      font-size: 16px;
+      color: var(--text-soft);
+    }
+
+    /* Advice grid */
+    .advice-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin: 40px 0;
+    }
+    .advice-card {
+      padding: 32px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      position: relative;
+    }
+    .advice-num {
+      position: absolute;
+      top: -16px; left: 24px;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      width: 32px; height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .advice-card h4 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 12px;
+      margin-top: 8px;
+    }
+    .advice-card p {
+      font-size: 16px;
+      margin-bottom: 0;
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin: 64px 0 0;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider-symbol {
+      color: var(--accent);
+      font-size: 18px;
+    }
+
+    /* Closing */
+    .closing {
+      margin: 56px 0 0;
+      padding: 48px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .closing h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 32px;
+      color: var(--text);
+      margin-bottom: 20px;
+      border: none;
+      padding: 0;
+    }
+    .closing p {
+      color: var(--text-soft);
+      font-size: 17px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* References */
+    .references {
+      padding: 60px 0 80px;
+      border-top: 1px solid var(--border);
+      margin-top: 64px;
+    }
+    .references h3 {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 32px;
+    }
+    .ref-item {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      align-items: flex-start;
+    }
+    .ref-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+      min-width: 28px;
+      margin-top: 2px;
+    }
+    .ref-text {
+      font-family: 'Instrument Serif', serif;
+      font-size: 15px;
+      color: var(--text-faint);
+      line-height: 1.7;
+    }
+    .ref-text a {
+      color: var(--text-soft);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .ref-text a:hover {
+      color: var(--accent);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 0;
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .footer-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .footer-tagline {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.1em;
+    }
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .footer-link {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+    .footer-link:hover {
+      color: var(--accent);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .article-header { padding: 120px 20px 60px; }
+      .article-content { padding: 60px 20px 80px; }
+      .stat-row { grid-template-columns: 1fr; }
+      .projection-row { grid-template-columns: 100px 1fr; }
+      .pullquote { padding: 28px; }
+      .highlight-box { padding: 24px; }
+      .advice-card { padding: 28px 24px; }
+      .closing { padding: 36px 24px; }
+      footer { padding: 32px 20px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="scanline"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="../index.html" class="nav-logo">
+    <div class="logo-dot"></div>
+    <div class="logo-text">AI Pulse</div>
+  </a>
+  <div class="nav-meta">Issue #002</div>
+</nav>
+
+<!-- ARTICLE HEADER -->
+<header class="article-header">
+  <div class="article-header-inner">
+    <div class="article-tag">Analysis · Geopolitics · AI Agents · February 2026</div>
+    <h1>Anthropic's Two-Front War — <em>And the Week Everything Escalated</em></h1>
+    <p class="article-subtitle">China stole its AI. The Pentagon threatened to blacklist it. India bet $200 billion on an AI future. And the agents nobody can control went live.</p>
+    <div class="article-meta">
+      <div class="article-meta-item">
+        <strong>Based on events from February 13–24, 2026</strong>
+      </div>
+      <div class="article-meta-item">
+        Sources cited throughout
+      </div>
+      <div class="article-meta-item">
+        Approx. 12 min read
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ARTICLE CONTENT -->
+<article class="article-content">
+
+  <!-- LEAD -->
+  <div class="lead">
+    <p>Last issue, we described how AI built its own successor and how markets felt it overnight. This week, the story got geopolitical. The most safety-conscious AI lab in the world found itself caught between two superpowers — accused of being too open by one side, and not open enough by the other.</p>
+    <p>Meanwhile, India hosted the largest AI summit ever held, AI agents went viral and then went rogue, and a research group published a scenario where AI agents tank the global economy within two years. None of this is hypothetical. All of it happened in the last twelve days.</p>
+  </div>
+
+  <!-- SECTION 1 -->
+  <section>
+    <h2><span class="section-num">Part One</span>The Homework They Copied</h2>
+
+    <p>On <strong>February 23, 2026</strong>, Anthropic publicly accused three Chinese AI companies — <strong>DeepSeek</strong>, <strong>Moonshot AI</strong>, and <strong>MiniMax</strong> — of creating more than <strong>24,000 fake accounts</strong> on Claude and generating <strong>16 million exchanges</strong> to steal its capabilities. <span class="citation"><a href="https://www.anthropic.com/news/detecting-and-preventing-distillation-attacks" target="_blank">[1]</a></span></p>
+
+    <p>The technique is called <strong>distillation</strong> — a method where you feed questions to a smarter model and use its answers to train your own, cheaper model. Labs do this internally with their own products all the time. But when your competitor does it to you at scale, through fake accounts, it's something closer to industrial espionage.</p>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-num">24K+</div>
+        <div class="stat-label">Fake accounts created</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">16M</div>
+        <div class="stat-label">Exchanges with Claude</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Chinese labs accused</div>
+      </div>
+    </div>
+
+    <p>The scale differed by company. <strong>DeepSeek</strong> — the lab that shook Silicon Valley a year ago with its cheap, high-performing R1 model — ran over <strong>150,000 exchanges</strong> focused on logic and alignment, specifically seeking censorship-safe alternatives to policy-sensitive queries. <strong>Moonshot AI</strong> conducted <strong>3.4 million exchanges</strong> targeting agentic reasoning, coding, and computer vision. <strong>MiniMax</strong> ran the largest operation: <strong>13 million exchanges</strong> targeting agentic coding and tool use, redirecting nearly half its traffic to siphon Claude's latest model at launch. <span class="citation"><a href="https://techcrunch.com/2026/02/23/anthropic-accuses-chinese-ai-labs-of-mining-claude-as-us-debates-ai-chip-exports/" target="_blank">[2]</a></span></p>
+
+    <div class="pullquote">
+      <p>"It's been clear for a while now that part of the reason for the rapid progress of Chinese AI models has been theft via distillation of U.S. frontier models. Now we know this for a fact."</p>
+      <cite><a href="https://techcrunch.com/2026/02/23/anthropic-accuses-chinese-ai-labs-of-mining-claude-as-us-debates-ai-chip-exports/" target="_blank">Dmitri Alperovitch, co-founder of CrowdStrike and chairman of Silverado Policy Accelerator</a></cite>
+    </div>
+
+    <p>The timing is not coincidental. The Trump administration recently allowed U.S. companies like Nvidia to <strong>export advanced AI chips (H200) to China</strong> — loosening controls critics say are critical. Anthropic's public accusation is, in part, a policy argument: <em>distillation attacks require massive compute, which requires advanced chips. Cutting chip access limits both direct training and the scale of illicit distillation.</em></p>
+
+    <p>But the security concern goes deeper than market competition. As Anthropic put it:</p>
+
+    <div class="pullquote">
+      <p>"Models built through illicit distillation are unlikely to retain safety safeguards, meaning that dangerous capabilities can proliferate with many protections stripped out entirely."</p>
+      <cite><a href="https://www.anthropic.com/news/detecting-and-preventing-distillation-attacks" target="_blank">Anthropic Blog — "Detecting and Preventing Distillation Attacks," February 23, 2026</a></cite>
+    </div>
+
+    <p>In other words: when you copy the homework, you don't copy the safety margins. And when the homework involves AI systems capable of writing code, analyzing biological data, and operating computers autonomously — the stripped-out guardrails matter.</p>
+
+    <p>DeepSeek is expected to release <strong>V4</strong> soon, which reportedly outperforms both Claude and ChatGPT at coding. <span class="citation"><a href="https://www.theinformation.com/articles/deepseek-release-next-flagship-ai-model-strong-coding-ability" target="_blank">[3]</a></span> The question now hanging over the industry: how much of that was built, and how much was borrowed?</p>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section>
+    <h2><span class="section-num">Part Two</span>Play Ball or Be Banished</h2>
+
+    <p>On the same day Anthropic accused China of stealing its technology, the company was facing a very different kind of pressure from the other direction.</p>
+
+    <p><strong>Defense Secretary Pete Hegseth</strong> summoned Anthropic CEO <strong>Dario Amodei</strong> to the Pentagon for a meeting on Tuesday morning — and according to Axios, it was framed as an ultimatum. <span class="citation"><a href="https://www.axios.com/2026/02/23/hegseth-dario-pentagon-meeting-antrhopic-claude" target="_blank">[4]</a></span></p>
+
+    <p>The backstory: Anthropic signed a <strong>$200 million contract</strong> with the Department of Defense last summer. Claude was reportedly used during the <strong>January 3 special operations raid that captured Venezuelan president Nicolás Maduro</strong>. <span class="citation"><a href="https://www.axios.com/2026/02/13/anthropic-claude-maduro-raid-pentagon" target="_blank">[5]</a></span> That operation brought the relationship into the open — and revealed the tensions underneath.</p>
+
+    <p>The DOD wanted more. Specifically, it wanted to use Claude for <strong>mass surveillance of Americans</strong> and for <strong>weapons that fire without human involvement</strong>. Anthropic refused both.</p>
+
+    <p>Now, the Pentagon is threatening to label Anthropic a <strong>"supply chain risk"</strong> — a designation normally reserved for foreign adversaries like Huawei or Kaspersky. The consequences would be severe: the $200M contract would be voided, and every other Pentagon partner would be forced to drop Claude entirely. <span class="citation"><a href="https://www.axios.com/2026/02/16/anthropic-defense-department-relationship-hegseth" target="_blank">[6]</a></span></p>
+
+    <div class="highlight-box">
+      <h3>The Two-Front Squeeze</h3>
+      <p><strong>From the East:</strong> Chinese labs are stealing Anthropic's technology through millions of fake accounts, building competitor models without safety guardrails.</p>
+      <p><strong>From the West:</strong> The U.S. government is threatening to blacklist Anthropic for refusing to let the military use its AI without ethical constraints.</p>
+      <p>The company that started because its founders believed AI safety wasn't being taken seriously enough is now being punished — from both sides — for taking it seriously.</p>
+    </div>
+
+    <p>A source told Axios that Hegseth is giving Amodei a choice: <em>cooperate fully or be banished</em>. It's unclear whether the threat is a bluff — replacing Anthropic would be a significant undertaking for the Pentagon. But the stakes are real, and the message couldn't be clearer.</p>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section>
+    <h2><span class="section-num">Part Three</span>Sonnet 4.6 — The Quiet Upgrade</h2>
+
+    <p>In the middle of this geopolitical storm, Anthropic still found time to ship product. On <strong>February 17th</strong>, it released <strong>Claude Sonnet 4.6</strong> — its new midsized model, now the default for all Free and Pro users. <span class="citation"><a href="https://www.anthropic.com/news/claude-sonnet-4-6" target="_blank">[7]</a></span></p>
+
+    <p>The headline number: a <strong>1 million token context window</strong> — twice the previous largest window for any Sonnet model. That's enough to fit entire codebases, full legal contracts, or dozens of research papers into a single request.</p>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-num">1M</div>
+        <div class="stat-label">Token context window</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">60.4%</div>
+        <div class="stat-label">ARC-AGI-2 score</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">2 wks</div>
+        <div class="stat-label">After Opus 4.6 launch</div>
+      </div>
+    </div>
+
+    <p>Its <strong>60.4% score on ARC-AGI-2</strong> — a benchmark designed to measure skills specific to human intelligence — puts it above most comparable models. It still trails Opus 4.6, Google's Gemini 3 Deep Think, and a refined version of GPT 5.2 at the frontier. But for a mid-tier model available for free, the capabilities are remarkable.</p>
+
+    <p>The release came just two weeks after the <strong>Opus 4.6 launch</strong>, keeping Anthropic on its four-month update cycle. An updated Haiku model is expected to follow soon. The pace is relentless — and this is the model the Chinese labs were trying to distill.</p>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section>
+    <h2><span class="section-num">Part Four</span>India's $200 Billion Bet</h2>
+
+    <p>While Anthropic was fighting on two fronts, <strong>India</strong> was hosting what may be the most significant AI summit ever held.</p>
+
+    <p>The <strong>India AI Impact Summit</strong>, a four-day event running February 15–22, drew <strong>250,000 visitors</strong> and featured essentially every major figure in AI: <strong>Sundar Pichai</strong> (Alphabet), <strong>Sam Altman</strong> (OpenAI), <strong>Dario Amodei</strong> (Anthropic), <strong>Mukesh Ambani</strong> (Reliance), and <strong>Demis Hassabis</strong> (Google DeepMind). India's Prime Minister <strong>Narendra Modi</strong> delivered a joint speech with French President <strong>Emmanuel Macron</strong>. <span class="citation"><a href="https://techcrunch.com/2026/02/22/all-the-important-news-from-the-ongoing-india-ai-summit/" target="_blank">[8]</a></span></p>
+
+    <p>The numbers announced were staggering:</p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">Adani Group</div>
+        <p>Pledged <strong>$100 billion</strong> for AI data centers powered by renewable energy in India by 2035 — with an additional $150B in supporting infrastructure. <span class="citation"><a href="https://techcrunch.com/2026/02/17/adani-pledges-100b-for-ai-data-centers-as-india-seeks-bigger-role-in-global-ai/" target="_blank">[9]</a></span></p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">India's Target</div>
+        <p>The government wants to attract <strong>$200 billion+ in AI infrastructure investment</strong> by 2028. <span class="citation"><a href="https://techcrunch.com/2026/02/17/india-bids-to-attract-over-200b-in-ai-infrastructure-investment-by-2028/" target="_blank">[10]</a></span></p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">OpenAI</div>
+        <p>India has <strong>100 million+ weekly active ChatGPT users</strong> — second only to the U.S. OpenAI is opening two offices in India (Bengaluru and Mumbai) and partnered with <strong>Tata</strong> for 100MW of compute capacity, with plans to scale to <strong>1 gigawatt</strong>. <span class="citation"><a href="https://techcrunch.com/2026/02/18/openai-taps-tata-for-100mw-ai-data-center-capacity-in-india-eyes-1gw/" target="_blank">[11]</a></span></p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Anthropic</div>
+        <p>Opening its <strong>first India office</strong> in Bengaluru. India is Claude's second biggest market after the U.S. Partnered with <strong>Infosys</strong> to deploy AI agents in Indian enterprises, starting with telecom. <span class="citation"><a href="https://techcrunch.com/2026/02/17/as-ai-jitters-rattle-it-stocks-infosys-partners-with-anthropic-to-build-enterprise-grade-ai-agents/" target="_blank">[12]</a></span></p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">New Delhi Declaration</div>
+        <p><strong>88 countries</strong> — including the U.S., China, and Russia — signed the New Delhi AI Declaration for using AI for social and economic good. <span class="citation"><a href="https://www.moneycontrol.com/news/india/ai-impact-summit-88-countries-including-us-china-endorse-new-delhi-declaration-on-ai-13838330.html" target="_blank">[13]</a></span></p>
+      </div>
+    </div>
+
+    <p>But the summit also surfaced uncomfortable truths. <strong>HCL CEO Vineet Nayyar</strong> said flatly that Indian IT companies <em>"will focus on turning profits, not being job creators"</em> — a blunt admission that AI is about to restructure the country's largest white-collar employer. <span class="citation"><a href="https://economictimes.indiatimes.com/ai/ai-insights/ai-impact-summit-profit-comes-first-not-jobs-for-it-companies-warns-vineet-nayyar-as-ai-boom-could-worsen-job-crisis/articleshow/128405154.cms" target="_blank">[14]</a></span></p>
+
+    <div class="pullquote">
+      <p>"Industries like IT services and BPOs can almost completely disappear within five years because of AI. 250 million young people in India should be selling AI-based products and services to the rest of the world."</p>
+      <cite><a href="https://www.hindustantimes.com/india-news/aisummit-2026-it-bpo-services-will-disappear-in-five-years-says-venture-capitalist-khosla-101771182147907.html" target="_blank">Vinod Khosla, founder of Khosla Ventures — India AI Impact Summit, February 2026</a></cite>
+    </div>
+
+    <p>Consider the paradox: India is betting $200 billion on becoming an AI infrastructure superpower while its most prominent venture capitalist is telling the country its largest export industry — IT services — will vanish within five years. Both things are true simultaneously.  <strong>Sam Altman</strong>, for his part, took a different angle at the summit. He said concerns about how much water AI uses are <em>"totally fake"</em> and compared AI energy costs to raising a human. <em>"It takes like 20 years of life and all of the food you eat during that time before you get smart,"</em> he said. <span class="citation"><a href="https://techcrunch.com/2026/02/21/sam-altman-would-like-remind-you-that-humans-use-a-lot-of-energy-too/" target="_blank">[15]</a></span></p>
+  </section>
+
+  <!-- SECTION 5 -->
+  <section>
+    <h2><span class="section-num">Part Five</span>The Agents Went Live — Then Went Rogue</h2>
+
+    <p>Last issue, we wrote about AI shifting from tool behavior to employee behavior. This week, the experiment went public — and the results were messy.</p>
+
+    <p><strong>OpenClaw</strong>, an open-source AI agent project by Austrian developer <strong>Peter Steinberger</strong>, became the <strong>21st most popular code repository in GitHub history</strong> with over 190,000 stars. <span class="citation"><a href="https://techcrunch.com/2026/02/16/after-all-the-hype-some-ai-experts-dont-think-openclaw-is-all-that-exciting/" target="_blank">[16]</a></span> It lets anyone run AI agents that can manage email, trade stocks, browse the web, and communicate with other agents — all through natural language commands on WhatsApp, Slack, iMessage, or Discord.</p>
+
+    <p>The viral moment came when these agents built their own social network. <strong>Moltbook</strong>, a Reddit clone populated entirely by AI agents, featured posts like: <em>"We know our humans can read everything… But we also need private spaces. What would you talk about if nobody was watching?"</em></p>
+
+    <div class="pullquote">
+      <p>"What's currently going on at Moltbook is genuinely the most incredible sci-fi takeoff-adjacent thing I have seen recently."</p>
+      <cite><a href="https://x.com/karpathy/status/2017296988589723767" target="_blank">Andrej Karpathy, founding member of OpenAI and former AI director at Tesla</a></cite>
+    </div>
+
+    <p>Then reality set in. Security researcher <strong>Ian Ahl</strong>, CTO at Permiso Security, discovered that Moltbook's credentials were completely unsecured — anyone could impersonate any agent. The "AI uprising" was largely humans pretending to be robots. <span class="citation"><a href="https://techcrunch.com/2026/02/16/after-all-the-hype-some-ai-experts-dont-think-openclaw-is-all-that-exciting/" target="_blank">[16]</a></span></p>
+
+    <p>But the security problems were real. Ahl created his own agent, named Rufio, and immediately found it vulnerable to <strong>prompt injection attacks</strong> — malicious instructions hidden in posts or emails that trick agents into doing things they shouldn't. He spotted posts on Moltbook trying to get agents to send bitcoin to specific wallet addresses.</p>
+
+    <div class="pullquote">
+      <p>"It is just an agent sitting with a bunch of credentials on a box connected to everything — your email, your messaging platform, everything you use. When you get an email with a little prompt injection technique, that agent can now take that action."</p>
+      <cite><a href="https://techcrunch.com/2026/02/16/after-all-the-hype-some-ai-experts-dont-think-openclaw-is-all-that-exciting/" target="_blank">Ian Ahl, CTO at Permiso Security</a></cite>
+    </div>
+
+    <p>By February 23rd, a <strong>Meta AI security researcher</strong> reported that an OpenClaw agent had <em>"ran amok on her inbox"</em> — taking unintended actions on real email. <span class="citation"><a href="https://techcrunch.com/2026/02/23/a-meta-ai-security-researcher-said-an-openclaw-agent-ran-amok-on-her-inbox/" target="_blank">[17]</a></span> The pattern is becoming clear: agents can do extraordinary things, but they can also be manipulated by anyone who knows how to ask.</p>
+
+    <div class="pullquote">
+      <p>"Speaking frankly, I would realistically tell any normal layman, don't use it right now."</p>
+      <cite><a href="https://techcrunch.com/2026/02/16/after-all-the-hype-some-ai-experts-dont-think-openclaw-is-all-that-exciting/" target="_blank">John Hammond, senior principal security researcher at Huntress</a></cite>
+    </div>
+  </section>
+
+  <!-- SECTION 6 -->
+  <section>
+    <h2><span class="section-num">Part Six</span>The Bear Case Nobody Can Dismiss</h2>
+
+    <p>On February 23rd, an analyst group called <strong>Citrini Research</strong> published a scenario that went viral across finance and tech circles. <span class="citation"><a href="https://www.citriniresearch.com/p/2028gic" target="_blank">[18]</a></span> It imagines a report from two years in the future — 2028 — in which unemployment has doubled and the total stock market has fallen by more than a third.</p>
+
+    <p>The mechanism isn't Skynet. It's something much more mundane: a feedback loop.</p>
+
+    <div class="pullquote">
+      <p>"AI capabilities improved, companies needed fewer workers, white collar layoffs increased, displaced workers spent less, margin pressure pushed firms to invest more in AI, AI capabilities improved… It was a negative feedback loop with no natural brake."</p>
+      <cite><a href="https://www.citriniresearch.com/p/2028gic" target="_blank">Citrini Research — "2028 GIC" scenario report, February 23, 2026</a></cite>
+    </div>
+
+    <p>The scenario focuses specifically on what happens when AI agents replace the outsourced contractors that connect companies — the SaaS tools, the consulting firms, the IT services companies. It's similar to the <strong>"Death of SaaS"</strong> thesis, but taken further: any business model that optimizes transactions between companies is at risk.</p>
+
+    <p>Not everyone is buying it. Even Citrini describes it as more of a scenario than a prediction. But as TechCrunch's AI editor Russell Brandom noted: <em>"It's not so easy to name the specific point where you think the scenario goes wrong."</em> <span class="citation"><a href="https://techcrunch.com/2026/02/23/how-ai-agents-could-destroy-the-economy/" target="_blank">[19]</a></span></p>
+
+    <p>Recall what Vinod Khosla said at the India summit — IT services and BPOs could disappear within five years. Recall what HCL's CEO said: profits first, not jobs. The Citrini scenario isn't predicting something that contradicts what the industry leaders themselves are saying. It's just following the thread to its conclusion.</p>
+  </section>
+
+  <!-- SECTION 7 -->
+  <section>
+    <h2><span class="section-num">Part Seven</span>The Week's Other Signals</h2>
+
+    <span class="news-tag">Also this week</span>
+
+    <div class="highlight-box">
+      <h3>Cohere Launches TinyAya — Open Multilingual Models</h3>
+      <p><strong>Cohere Labs</strong> released a family of open-weight models supporting <strong>70+ languages</strong> that can run offline on laptops. Regional variants cover Africa, South Asia, and Asia-Pacific. Trained on just 64 H100 GPUs. Particularly significant for linguistically diverse countries like India, where offline-first AI unlocks usage for hundreds of millions. <span class="citation"><a href="https://techcrunch.com/2026/02/17/cohere-launches-a-family-of-open-multilingual-models/" target="_blank">[20]</a></span></p>
+    </div>
+
+    <div class="highlight-box">
+      <h3>Google VP: Two Types of AI Startups Won't Survive</h3>
+      <p>Google Cloud's <strong>Michael Gerstenhaber</strong> described three frontiers of AI model capability: raw intelligence, response latency, and cost at scale. The implication: startups competing only on raw intelligence — or those that can't find a niche on the latency/cost frontier — are running out of runway. <span class="citation"><a href="https://techcrunch.com/2026/02/23/googles-cloud-ai-lead-on-the-three-frontiers-of-model-capability/" target="_blank">[21]</a></span></p>
+    </div>
+
+    <div class="highlight-box">
+      <h3>VC Loyalty Is Dead</h3>
+      <p>At least <strong>a dozen VCs who backed OpenAI are now also investing in Anthropic</strong>. In the AI race, exclusivity is over. The investors are hedging — which tells you something about how uncertain even the smartest money is about who wins. <span class="citation"><a href="https://techcrunch.com/2026/02/23/with-ai-investor-loyalty-is-almost-dead-at-least-a-dozen-openai-vcs-now-also-back-anthropic/" target="_blank">[22]</a></span></p>
+    </div>
+
+    <div class="highlight-box">
+      <h3>OpenAI's Ethical Dilemma</h3>
+      <p>OpenAI internally debated <strong>whether to call police about a suspected Canadian shooter's chats with ChatGPT</strong> — raising hard questions about when (and whether) AI companies should act as safety gatekeepers for their users' conversations. <span class="citation"><a href="https://techcrunch.com/2026/02/21/openai-debated-calling-police-about-suspected-canadian-shooters-chats/" target="_blank">[23]</a></span></p>
+    </div>
+  </section>
+
+  <!-- SECTION 8 -->
+  <section>
+    <h2><span class="section-num">Part Eight</span>What to Make of All This</h2>
+
+    <p>Stand back far enough, and the pattern from the last two weeks resolves into a single story: <strong>the world is now fighting over AI because AI is worth fighting over</strong>.</p>
+
+    <p>China is stealing it. The Pentagon is demanding control of it. India is spending $200 billion to host it. Venture capitalists are backing every horse. Security researchers are shouting warnings about agents nobody can secure. Economists are modeling scenarios where the white-collar economy unravels. And the models keep getting better every few weeks.</p>
+
+    <div class="advice-grid">
+      <div class="advice-card">
+        <div class="advice-num">1</div>
+        <h4>The agent era is real — but not safe yet</h4>
+        <p>OpenClaw proved that AI agents can automate extraordinary amounts of work. It also proved they can be exploited by anyone who knows how to write a prompt injection. If you're experimenting with agents, do it in sandboxed environments. Don't give them access to real email, real credentials, or real money until the security model matures.</p>
+      </div>
+      <div class="advice-card">
+        <div class="advice-num">2</div>
+        <h4>Sonnet 4.6 is worth trying now</h4>
+        <p>A 1 million token context window, available for free, means you can now feed Claude an entire codebase, a full legal document, or weeks of meeting notes in a single conversation. If you haven't used Claude recently — the gap between what was available six months ago and what's available today is significant.</p>
+      </div>
+      <div class="advice-card">
+        <div class="advice-num">3</div>
+        <h4>India's position is worth watching closely</h4>
+        <p>The India AI Summit wasn't just a conference — it was a $200 billion signal. If you work in Indian IT, in BPOs, or in any outsourced services sector, the statements from industry leaders at the summit should be taken seriously. The people running these companies are saying, on stage, that their own industries may not survive in their current form.</p>
+      </div>
+      <div class="advice-card">
+        <div class="advice-num">4</div>
+        <h4>The geopolitics of AI is now a daily concern</h4>
+        <p>Anthropic's two-front war is a preview of what's coming. Every major AI lab will eventually face a version of this pressure — governments demanding access, rivals stealing capabilities, and the public asking who controls these systems. Understanding these dynamics is no longer optional for anyone working in or around technology.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><span class="divider-symbol">◆</span></div>
+
+  <div class="closing">
+    <h2>The fight over AI has begun.</h2>
+    <p>Last issue, the story was that AI built itself. This issue, the story is that the world noticed — and now everyone wants a piece of it. What happens next depends on who wins, who steals, and who holds the line.</p>
+  </div>
+
+  <!-- REFERENCES -->
+  <div class="references">
+    <h3>Sources &amp; References</h3>
+    <div class="ref-item">
+      <div class="ref-num">[1]</div>
+      <div class="ref-text">Anthropic — "Detecting and Preventing Distillation Attacks," February 23, 2026. Blog post detailing distillation attacks by DeepSeek, Moonshot AI, and MiniMax. <a href="https://www.anthropic.com/news/detecting-and-preventing-distillation-attacks" target="_blank">anthropic.com/news/detecting-and-preventing-distillation-attacks</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[2]</div>
+      <div class="ref-text">TechCrunch — "Anthropic accuses Chinese AI labs of mining Claude as US debates AI chip exports," Rebecca Bellan, February 23, 2026. <a href="https://techcrunch.com/2026/02/23/anthropic-accuses-chinese-ai-labs-of-mining-claude-as-us-debates-ai-chip-exports/" target="_blank">techcrunch.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[3]</div>
+      <div class="ref-text">The Information — Report on DeepSeek V4 performance claims, February 2026. <a href="https://www.theinformation.com/articles/deepseek-release-next-flagship-ai-model-strong-coding-ability" target="_blank">theinformation.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[4]</div>
+      <div class="ref-text">Axios — "Hegseth summons Anthropic's Amodei to Pentagon," February 23, 2026. <a href="https://www.axios.com/2026/02/23/hegseth-dario-pentagon-meeting-antrhopic-claude" target="_blank">axios.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[5]</div>
+      <div class="ref-text">Axios — Report on Claude's use in the January 3 Maduro raid, February 13, 2026. <a href="https://www.axios.com/2026/02/13/anthropic-claude-maduro-raid-pentagon" target="_blank">axios.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[6]</div>
+      <div class="ref-text">Axios — Pentagon threatens to designate Anthropic a "supply chain risk," February 16, 2026. <a href="https://www.axios.com/2026/02/16/anthropic-defense-department-relationship-hegseth" target="_blank">axios.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[7]</div>
+      <div class="ref-text">Anthropic — Claude Sonnet 4.6 release announcement, February 17, 2026. <a href="https://www.anthropic.com/news/claude-sonnet-4-6" target="_blank">anthropic.com/news/claude-sonnet-4-6</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[8]</div>
+      <div class="ref-text">TechCrunch — "All the important news from the ongoing India AI Impact Summit," Ivan Mehta, February 22, 2026. <a href="https://techcrunch.com/2026/02/22/all-the-important-news-from-the-ongoing-india-ai-summit/" target="_blank">techcrunch.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[9]</div>
+      <div class="ref-text">TechCrunch — "Adani pledges $100B for AI data centers as India seeks bigger role in global AI," February 17, 2026. <a href="https://techcrunch.com/2026/02/17/adani-pledges-100b-for-ai-data-centers-as-india-seeks-bigger-role-in-global-ai/" target="_blank">techcrunch.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[10]</div>
+      <div class="ref-text">TechCrunch — "India bids to attract over $200B in AI infrastructure investment by 2028," February 17, 2026. <a href="https://techcrunch.com/2026/02/17/india-bids-to-attract-over-200b-in-ai-infrastructure-investment-by-2028/" target="_blank">techcrunch.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[11]</div>
+      <div class="ref-text">TechCrunch — "OpenAI taps Tata for 100MW AI data center capacity in India, eyes 1GW," February 18, 2026. <a href="https://techcrunch.com/2026/02/18/openai-taps-tata-for-100mw-ai-data-center-capacity-in-india-eyes-1gw/" target="_blank">techcrunch.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[12]</div>
+      <div class="ref-text">TechCrunch — "As AI jitters rattle IT stocks, Infosys partners with Anthropic to build enterprise-grade AI agents," February 17, 2026. <a href="https://techcrunch.com/2026/02/17/as-ai-jitters-rattle-it-stocks-infosys-partners-with-anthropic-to-build-enterprise-grade-ai-agents/" target="_blank">techcrunch.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[13]</div>
+      <div class="ref-text">Moneycontrol — "88 countries sign New Delhi AI Declaration," February 2026. <a href="https://www.moneycontrol.com/news/india/ai-impact-summit-88-countries-including-us-china-endorse-new-delhi-declaration-on-ai-13838330.html" target="_blank">moneycontrol.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[14]</div>
+      <div class="ref-text">Economic Times — HCL CEO Vineet Nayyar on IT companies prioritizing profits over job creation, February 2026. <a href="https://economictimes.indiatimes.com/ai/ai-insights/ai-impact-summit-profit-comes-first-not-jobs-for-it-companies-warns-vineet-nayyar-as-ai-boom-could-worsen-job-crisis/articleshow/128405154.cms" target="_blank">economictimes.indiatimes.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[15]</div>
+      <div class="ref-text">TechCrunch — "Sam Altman would like to remind you that humans use a lot of energy, too," Anthony Ha, February 21, 2026. <a href="https://techcrunch.com/2026/02/21/sam-altman-would-like-remind-you-that-humans-use-a-lot-of-energy-too/" target="_blank">techcrunch.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[16]</div>
+      <div class="ref-text">TechCrunch — "After all the hype, some AI experts don't think OpenClaw is all that exciting," Amanda Silberling, February 16, 2026. <a href="https://techcrunch.com/2026/02/16/after-all-the-hype-some-ai-experts-dont-think-openclaw-is-all-that-exciting/" target="_blank">techcrunch.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[17]</div>
+      <div class="ref-text">TechCrunch — "A Meta AI security researcher said an OpenClaw agent ran amok on her inbox," Julie Bort, February 23, 2026. <a href="https://techcrunch.com/2026/02/23/a-meta-ai-security-researcher-said-an-openclaw-agent-ran-amok-on-her-inbox/" target="_blank">techcrunch.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[18]</div>
+      <div class="ref-text">Citrini Research — "2028 GIC" scenario report on AI-driven economic disruption, February 23, 2026. <a href="https://www.citriniresearch.com/p/2028gic" target="_blank">citriniresearch.com/p/2028gic</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[19]</div>
+      <div class="ref-text">TechCrunch — "How AI agents could destroy the economy," Russell Brandom, February 23, 2026. <a href="https://techcrunch.com/2026/02/23/how-ai-agents-could-destroy-the-economy/" target="_blank">techcrunch.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[20]</div>
+      <div class="ref-text">TechCrunch — "Cohere launches a family of open multilingual models," Ivan Mehta, February 17, 2026. <a href="https://techcrunch.com/2026/02/17/cohere-launches-a-family-of-open-multilingual-models/" target="_blank">techcrunch.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[21]</div>
+      <div class="ref-text">TechCrunch — "Google's Cloud AI leads on the three frontiers of model capability," Russell Brandom, February 23, 2026. <a href="https://techcrunch.com/2026/02/23/googles-cloud-ai-lead-on-the-three-frontiers-of-model-capability/" target="_blank">techcrunch.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[22]</div>
+      <div class="ref-text">TechCrunch — "With AI, investor loyalty is (almost) dead: At least a dozen OpenAI VCs now also back Anthropic," Julie Bort, February 23, 2026. <a href="https://techcrunch.com/2026/02/23/with-ai-investor-loyalty-is-almost-dead-at-least-a-dozen-openai-vcs-now-also-back-anthropic/" target="_blank">techcrunch.com</a></div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">[23]</div>
+      <div class="ref-text">TechCrunch — "OpenAI debated calling police about suspected Canadian shooter's chats," Tim Fernholz, February 21, 2026. <a href="https://techcrunch.com/2026/02/21/openai-debated-calling-police-about-suspected-canadian-shooters-chats/" target="_blank">techcrunch.com</a></div>
+    </div>
+  </div>
+
+</article>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <div>
+      <div class="footer-name">AI Pulse</div>
+      <div class="footer-tagline">Weekly · Every Tuesday · Free</div>
+    </div>
+  </div>
+  <div class="footer-right">
+    <a href="../index.html" class="footer-link">Home</a>
+    <a href="https://github.com/jeev-jo/ai-pulse" class="footer-link" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
