@@ -1,6 +1,8 @@
 """Generate Open Graph images for AI Pulse articles."""
+import textwrap
+
 from PIL import Image, ImageDraw, ImageFont
-import os, textwrap
+import os
 
 # ── Dimensions ──
 W, H = 1200, 630
@@ -17,6 +19,7 @@ BORDER  = (34, 34, 34)       # #222222
 # ── Windows system fonts ──
 FONTS = "C:/Windows/Fonts/"
 
+
 def load_fonts():
     try:
         return {
@@ -30,6 +33,7 @@ def load_fonts():
     except Exception:
         f = ImageFont.load_default()
         return {k: f for k in ["brand","tag","heading","heading2","sub","meta"]}
+
 
 def draw_og(title_bold, title_italic, subtitle, tags, meta_lines, filename):
     fonts = load_fonts()
@@ -96,6 +100,7 @@ def draw_og(title_bold, title_italic, subtitle, tags, meta_lines, filename):
     path = os.path.join("og", filename)
     img.save(path, "PNG", quality=95)
     print(f"✓ Generated {path} ({W}x{H})")
+
 
 # ────────────────────────────────────────────
 # Issue #002
