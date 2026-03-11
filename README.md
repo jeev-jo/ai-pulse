@@ -27,23 +27,11 @@ No panic. No hype. Just the signal.
 
 ---
 
-## 📰 Articles
-
-| # | Title | Date | Read |
-|---|-------|------|------|
-| 002 | Anthropic's Two-Front War — And the Week Everything Escalated | Feb 24, 2026 | [→ Read](https://jeev-jo.github.io/ai-pulse/articles/002-anthropic-two-front-war.html) |
-| 001 | AI Built Itself — And the World Is Only Starting to Notice | Feb 11, 2026 | [→ Read](https://jeev-jo.github.io/ai-pulse/articles/001-ai-built-itself.html) |
-
-
-*New articles added every Tuesday.*
-
----
-
-## 🧭 What to Expect Each Week
+## 🧭 What to Expect in Each Issue
 
 Every Tuesday article covers:
 
-- **The week's biggest AI development** — what happened and why it matters
+- **The biggest AI development** — what happened and why it matters
 - **Market & economic impact** — how it's affecting industries, stocks, and jobs
 - **Plain-language explanation** — no jargon, no assumed knowledge
 - **Cited sources** — every claim linked to its origin

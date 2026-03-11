@@ -2,3 +2,7 @@
 *.medium
 
 medium/
+
+# remove python files
+*.py
+__pycache__/
