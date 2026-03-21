@@ -13,6 +13,8 @@
 ![Language](https://img.shields.io/badge/written%20in-english-orange?style=flat-square)
 ![Free](https://img.shields.io/badge/always-free-blueviolet?style=flat-square)
 
+🔗 **[Read AI Pulse →](https://jeev-jo.github.io/ai-pulse/)**
+
 </div>
 
 ---
