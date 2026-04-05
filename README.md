@@ -9,7 +9,6 @@
 ---
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen?style=flat-square)
-![Cadence](https://img.shields.io/badge/cadence-every%20tuesday-blue?style=flat-square)
 ![Language](https://img.shields.io/badge/written%20in-english-orange?style=flat-square)
 ![Free](https://img.shields.io/badge/always-free-blueviolet?style=flat-square)
 
